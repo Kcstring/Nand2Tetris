@@ -1,0 +1,433 @@
+function Board.new 0
+    push constant 3
+    call Memory.alloc 1
+    pop pointer 0
+    push constant 10
+    pop this 1
+    push constant 20
+    pop this 2
+    push this 1
+    push this 2
+    call Math.multiply 2
+    call Array.new 1
+    pop this 0
+    push pointer 0
+    call Board.clear 1
+    pop temp 0
+    push pointer 0
+    return
+function Board.clear 1
+    push argument 0
+    pop pointer 0
+    push constant 0
+    pop local 0
+label Board_0
+    push local 0
+    push this 1
+    push this 2
+    call Math.multiply 2
+    lt
+    not
+    if-goto Board_1
+    push local 0
+    push this 0
+    add
+    push constant 0
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push local 0
+    push constant 1
+    add
+    pop local 0
+    goto Board_0
+label Board_1
+    push constant 0
+    return
+function Board.getCell 0
+    push argument 0
+    pop pointer 0
+    push argument 2
+    push this 1
+    call Math.multiply 2
+    push argument 1
+    add
+    push this 0
+    add
+    pop pointer 1
+    push that 0
+    push constant 1
+    eq
+    return
+function Board.isCollision 5
+    push argument 0
+    pop pointer 0
+    push argument 1
+    call Tetromino.getShape 1
+    pop local 4
+    push constant 0
+    pop local 0
+label Board_2
+    push local 0
+    push constant 4
+    lt
+    not
+    if-goto Board_3
+    push constant 0
+    pop local 1
+label Board_4
+    push local 1
+    push constant 4
+    lt
+    not
+    if-goto Board_5
+    push local 0
+    push constant 4
+    call Math.multiply 2
+    push local 1
+    add
+    push local 4
+    add
+    pop pointer 1
+    push that 0
+    push constant 1
+    eq
+    not
+    if-goto Board_7
+    push argument 1
+    call Tetromino.getX 1
+    push local 1
+    add
+    pop local 2
+    push argument 1
+    call Tetromino.getY 1
+    push local 0
+    add
+    pop local 3
+    push local 2
+    push constant 0
+    lt
+    push local 2
+    push this 1
+    gt
+    push constant 1
+    sub
+    or
+    push local 3
+    push this 2
+    gt
+    push constant 1
+    sub
+    or
+    not
+    if-goto Board_9
+    push constant 1
+    neg
+    return
+    goto Board_8
+label Board_9
+label Board_8
+    push local 3
+    push constant 1
+    neg
+    gt
+    push local 2
+    push constant 1
+    neg
+    gt
+    and
+    push local 2
+    push this 1
+    lt
+    and
+    not
+    if-goto Board_11
+    push local 3
+    push this 1
+    call Math.multiply 2
+    push local 2
+    add
+    push this 0
+    add
+    pop pointer 1
+    push that 0
+    push constant 1
+    eq
+    not
+    if-goto Board_13
+    push constant 1
+    neg
+    return
+    goto Board_12
+label Board_13
+label Board_12
+    goto Board_10
+label Board_11
+label Board_10
+    goto Board_6
+label Board_7
+label Board_6
+    push local 1
+    push constant 1
+    add
+    pop local 1
+    goto Board_4
+label Board_5
+    push local 0
+    push constant 1
+    add
+    pop local 0
+    goto Board_2
+label Board_3
+    push constant 0
+    return
+function Board.mergePiece 5
+    push argument 0
+    pop pointer 0
+    push argument 1
+    call Tetromino.getShape 1
+    pop local 4
+    push constant 0
+    pop local 0
+label Board_14
+    push local 0
+    push constant 4
+    lt
+    not
+    if-goto Board_15
+    push constant 0
+    pop local 1
+label Board_16
+    push local 1
+    push constant 4
+    lt
+    not
+    if-goto Board_17
+    push local 0
+    push constant 4
+    call Math.multiply 2
+    push local 1
+    add
+    push local 4
+    add
+    pop pointer 1
+    push that 0
+    push constant 1
+    eq
+    not
+    if-goto Board_19
+    push argument 1
+    call Tetromino.getX 1
+    push local 1
+    add
+    pop local 2
+    push argument 1
+    call Tetromino.getY 1
+    push local 0
+    add
+    pop local 3
+    push local 2
+    push constant 1
+    neg
+    gt
+    push local 3
+    push constant 1
+    neg
+    gt
+    and
+    not
+    if-goto Board_21
+    push local 3
+    push this 1
+    call Math.multiply 2
+    push local 2
+    add
+    push this 0
+    add
+    push constant 1
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    goto Board_20
+label Board_21
+label Board_20
+    goto Board_18
+label Board_19
+label Board_18
+    push local 1
+    push constant 1
+    add
+    pop local 1
+    goto Board_16
+label Board_17
+    push local 0
+    push constant 1
+    add
+    pop local 0
+    goto Board_14
+label Board_15
+    push constant 0
+    return
+function Board.checkLines 4
+    push argument 0
+    pop pointer 0
+    push constant 0
+    pop local 2
+    push this 2
+    push constant 1
+    sub
+    pop local 0
+label Board_22
+    push local 0
+    push constant 1
+    neg
+    gt
+    not
+    if-goto Board_23
+    push constant 1
+    neg
+    pop local 3
+    push constant 0
+    pop local 1
+label Board_24
+    push local 1
+    push this 1
+    lt
+    not
+    if-goto Board_25
+    push local 0
+    push this 1
+    call Math.multiply 2
+    push local 1
+    add
+    push this 0
+    add
+    pop pointer 1
+    push that 0
+    push constant 0
+    eq
+    not
+    if-goto Board_27
+    push constant 0
+    pop local 3
+    goto Board_26
+label Board_27
+label Board_26
+    push local 1
+    push constant 1
+    add
+    pop local 1
+    goto Board_24
+label Board_25
+    push local 3
+    not
+    if-goto Board_29
+    push pointer 0
+    push local 0
+    call Board.removeLine 2
+    pop temp 0
+    push local 2
+    push constant 1
+    add
+    pop local 2
+    goto Board_28
+label Board_29
+    push local 0
+    push constant 1
+    sub
+    pop local 0
+label Board_28
+    goto Board_22
+label Board_23
+    push local 2
+    return
+function Board.removeLine 2
+    push argument 0
+    pop pointer 0
+    push argument 1
+    pop local 0
+label Board_30
+    push local 0
+    push constant 0
+    gt
+    not
+    if-goto Board_31
+    push constant 0
+    pop local 1
+label Board_32
+    push local 1
+    push this 1
+    lt
+    not
+    if-goto Board_33
+    push local 0
+    push this 1
+    call Math.multiply 2
+    push local 1
+    add
+    push this 0
+    add
+    push local 0
+    push constant 1
+    sub
+    push this 1
+    call Math.multiply 2
+    push local 1
+    add
+    push this 0
+    add
+    pop pointer 1
+    push that 0
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push local 1
+    push constant 1
+    add
+    pop local 1
+    goto Board_32
+label Board_33
+    push local 0
+    push constant 1
+    sub
+    pop local 0
+    goto Board_30
+label Board_31
+    push constant 0
+    pop local 1
+label Board_34
+    push local 1
+    push this 1
+    lt
+    not
+    if-goto Board_35
+    push local 1
+    push this 0
+    add
+    push constant 0
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push local 1
+    push constant 1
+    add
+    pop local 1
+    goto Board_34
+label Board_35
+    push constant 0
+    return
+function Board.dispose 0
+    push argument 0
+    pop pointer 0
+    push this 0
+    call Array.dispose 1
+    pop temp 0
+    push pointer 0
+    call Memory.deAlloc 1
+    pop temp 0
+    push constant 0
+    return

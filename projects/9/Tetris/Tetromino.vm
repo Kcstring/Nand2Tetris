@@ -1,0 +1,368 @@
+function Tetromino.new 0
+    push constant 5
+    call Memory.alloc 1
+    pop pointer 0
+    push argument 0
+    pop this 4
+    push constant 4
+    pop this 3
+    push constant 16
+    call Array.new 1
+    pop this 0
+    push constant 3
+    pop this 1
+    push constant 2
+    neg
+    pop this 2
+    push pointer 0
+    push argument 0
+    call Tetromino.initShape 2
+    pop temp 0
+    push pointer 0
+    return
+function Tetromino.initShape 0
+    push argument 0
+    pop pointer 0
+    push pointer 0
+    call Tetromino.clearShape 1
+    pop temp 0
+    push argument 1
+    push constant 0
+    eq
+    not
+    if-goto Tetromino_1
+    push pointer 0
+    push constant 0
+    push constant 1
+    push constant 1
+    push constant 1
+    push constant 2
+    push constant 1
+    push constant 3
+    push constant 1
+    call Tetromino.setShape 9
+    pop temp 0
+    goto Tetromino_0
+label Tetromino_1
+label Tetromino_0
+    push argument 1
+    push constant 1
+    eq
+    not
+    if-goto Tetromino_3
+    push pointer 0
+    push constant 1
+    push constant 1
+    push constant 2
+    push constant 1
+    push constant 1
+    push constant 2
+    push constant 2
+    push constant 2
+    call Tetromino.setShape 9
+    pop temp 0
+    goto Tetromino_2
+label Tetromino_3
+label Tetromino_2
+    push argument 1
+    push constant 2
+    eq
+    not
+    if-goto Tetromino_5
+    push pointer 0
+    push constant 1
+    push constant 1
+    push constant 0
+    push constant 2
+    push constant 1
+    push constant 2
+    push constant 2
+    push constant 2
+    call Tetromino.setShape 9
+    pop temp 0
+    goto Tetromino_4
+label Tetromino_5
+label Tetromino_4
+    push argument 1
+    push constant 3
+    eq
+    not
+    if-goto Tetromino_7
+    push pointer 0
+    push constant 2
+    push constant 1
+    push constant 0
+    push constant 2
+    push constant 1
+    push constant 2
+    push constant 2
+    push constant 2
+    call Tetromino.setShape 9
+    pop temp 0
+    goto Tetromino_6
+label Tetromino_7
+label Tetromino_6
+    push argument 1
+    push constant 4
+    eq
+    not
+    if-goto Tetromino_9
+    push pointer 0
+    push constant 0
+    push constant 1
+    push constant 0
+    push constant 2
+    push constant 1
+    push constant 2
+    push constant 2
+    push constant 2
+    call Tetromino.setShape 9
+    pop temp 0
+    goto Tetromino_8
+label Tetromino_9
+label Tetromino_8
+    push argument 1
+    push constant 5
+    eq
+    not
+    if-goto Tetromino_11
+    push pointer 0
+    push constant 1
+    push constant 1
+    push constant 2
+    push constant 1
+    push constant 0
+    push constant 2
+    push constant 1
+    push constant 2
+    call Tetromino.setShape 9
+    pop temp 0
+    goto Tetromino_10
+label Tetromino_11
+label Tetromino_10
+    push argument 1
+    push constant 6
+    eq
+    not
+    if-goto Tetromino_13
+    push pointer 0
+    push constant 0
+    push constant 1
+    push constant 1
+    push constant 1
+    push constant 1
+    push constant 2
+    push constant 2
+    push constant 2
+    call Tetromino.setShape 9
+    pop temp 0
+    goto Tetromino_12
+label Tetromino_13
+label Tetromino_12
+    push constant 0
+    return
+function Tetromino.clearShape 1
+    push argument 0
+    pop pointer 0
+    push constant 0
+    pop local 0
+label Tetromino_14
+    push local 0
+    push constant 16
+    lt
+    not
+    if-goto Tetromino_15
+    push local 0
+    push this 0
+    add
+    push constant 0
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push local 0
+    push constant 1
+    add
+    pop local 0
+    goto Tetromino_14
+label Tetromino_15
+    push constant 0
+    return
+function Tetromino.setShape 0
+    push argument 0
+    pop pointer 0
+    push argument 2
+    push constant 4
+    call Math.multiply 2
+    push argument 1
+    add
+    push this 0
+    add
+    push constant 1
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push argument 4
+    push constant 4
+    call Math.multiply 2
+    push argument 3
+    add
+    push this 0
+    add
+    push constant 1
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push argument 6
+    push constant 4
+    call Math.multiply 2
+    push argument 5
+    add
+    push this 0
+    add
+    push constant 1
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push argument 8
+    push constant 4
+    call Math.multiply 2
+    push argument 7
+    add
+    push this 0
+    add
+    push constant 1
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push constant 0
+    return
+function Tetromino.rotate 3
+    push argument 0
+    pop pointer 0
+    push constant 16
+    call Array.new 1
+    pop local 0
+    push constant 0
+    pop local 1
+label Tetromino_16
+    push local 1
+    push constant 4
+    lt
+    not
+    if-goto Tetromino_17
+    push constant 0
+    pop local 2
+label Tetromino_18
+    push local 2
+    push constant 4
+    lt
+    not
+    if-goto Tetromino_19
+    push local 2
+    push constant 4
+    call Math.multiply 2
+    push constant 3
+    push local 1
+    sub
+    add
+    push local 0
+    add
+    push local 1
+    push constant 4
+    call Math.multiply 2
+    push local 2
+    add
+    push this 0
+    add
+    pop pointer 1
+    push that 0
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push local 2
+    push constant 1
+    add
+    pop local 2
+    goto Tetromino_18
+label Tetromino_19
+    push local 1
+    push constant 1
+    add
+    pop local 1
+    goto Tetromino_16
+label Tetromino_17
+    push this 0
+    call Array.dispose 1
+    pop temp 0
+    push local 0
+    pop this 0
+    push constant 0
+    return
+function Tetromino.dispose 0
+    push argument 0
+    pop pointer 0
+    push this 0
+    call Array.dispose 1
+    pop temp 0
+    push pointer 0
+    call Memory.deAlloc 1
+    pop temp 0
+    push constant 0
+    return
+function Tetromino.getX 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    return
+function Tetromino.getY 0
+    push argument 0
+    pop pointer 0
+    push this 2
+    return
+function Tetromino.getShape 0
+    push argument 0
+    pop pointer 0
+    push this 0
+    return
+function Tetromino.moveLeft 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    push constant 1
+    sub
+    pop this 1
+    push constant 0
+    return
+function Tetromino.moveRight 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    push constant 1
+    add
+    pop this 1
+    push constant 0
+    return
+function Tetromino.moveDown 0
+    push argument 0
+    pop pointer 0
+    push this 2
+    push constant 1
+    add
+    pop this 2
+    push constant 0
+    return
+function Tetromino.moveUp 0
+    push argument 0
+    pop pointer 0
+    push this 2
+    push constant 1
+    sub
+    pop this 2
+    push constant 0
+    return

@@ -1,0 +1,25 @@
+function Random.init 0
+    push argument 0
+    pop static 0
+    push constant 0
+    return
+function Random.rand 0
+    push static 0
+    push constant 1309
+    call Math.multiply 2
+    push constant 13849
+    add
+    pop static 0
+    push static 0
+    push constant 32767
+    and
+    return
+function Random.randRange 1
+    call Random.rand 0
+    pop local 0
+    push local 0
+    push constant 32767
+    push argument 0
+    call Math.divide 2
+    call Math.divide 2
+    return

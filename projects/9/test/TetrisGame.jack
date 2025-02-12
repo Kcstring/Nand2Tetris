@@ -1,0 +1,255 @@
+class TetrisGame {
+    field Piece currentPiece;
+    field Array board;
+    field boolean gameOver;
+    field int score;
+    
+    constructor TetrisGame new() {
+        let board = Array.new(200);  // 20行 * 10列
+        let gameOver = false;
+        let score = 0;
+        do initializeBoard();
+        let currentPiece = Piece.new(4, 0);
+        return this;
+    }
+    
+    method void initializeBoard() {
+        var int i;
+        let i = 0;
+        while (i < 200) {
+            let board[i] = 0;
+            let i = i + 1;
+        }
+        return;
+    }
+    
+    method void run() {
+        var char key;
+        var boolean exit;
+        
+        let exit = false;
+        
+        while (~exit) {
+            let key = Keyboard.keyPressed();
+            
+            if (key = 81) { let exit = true; }              // q退出
+            if (key = 130) { do tryMoveLeft(); }            // 左移
+            if (key = 132) { do tryMoveRight(); }           // 右移
+            if (key = 133) { do tryMoveDown(); }            // 加速下落
+            if (key = 131) { do currentPiece.rotate(); }    // 上键旋转
+            
+            if (~gameOver) {
+                do moveDown();
+                do checkLines();
+                do Screen.clearScreen();
+                do drawBorder();
+                do drawGame();
+                do drawScore();
+            } else {
+                do drawGameOver();
+            }
+            
+            do Sys.wait(300);
+        }
+        return;
+    }
+    
+    method void drawBorder() {
+        do Screen.setColor(true);
+        // 游戏区域边框 (160x320)
+        do Screen.drawRectangle(159, 40, 161, 319);    // 左边界
+        do Screen.drawRectangle(319, 40, 321, 319);    // 右边界
+        do Screen.drawRectangle(159, 319, 321, 321);  // 底边界
+        return;
+    }
+    
+    method void drawScore() {
+        do Output.moveCursor(2, 40);
+        do Output.printString("Score: ");
+        do Output.printInt(score);
+        return;
+    }
+    
+    method void drawGameOver() {
+        do Output.moveCursor(10, 25);
+        do Output.printString("Game Over!");
+        do Output.moveCursor(12, 25);
+        do Output.printString("Final Score: ");
+        do Output.printInt(score);
+        return;
+    }
+    
+    method void tryMoveLeft() {
+        if (~isCollision(currentPiece.getX() - 1, currentPiece.getY())) {
+            do currentPiece.moveLeft();
+        }
+        return;
+    }
+    
+    method void tryMoveRight() {
+        if (~isCollision(currentPiece.getX() + 1, currentPiece.getY())) {
+            do currentPiece.moveRight();
+        }
+        return;
+    }
+    
+    method void tryMoveDown() {
+        if (~isCollision(currentPiece.getX(), currentPiece.getY() + 1)) {
+            do currentPiece.moveDown();
+        }
+        return;
+    }
+    
+    method void moveDown() {
+        if (~isCollision(currentPiece.getX(), currentPiece.getY() + 1)) {
+            do currentPiece.moveDown();
+        } else {
+            do placePiece();
+            if (currentPiece.getY() < 2) {
+                let gameOver = true;
+            } else {
+                let currentPiece = Piece.new(4, 0);
+            }
+        }
+        return;
+    }
+    
+    method boolean isCollision(int newX, int newY) {
+        var int i, j, boardX, boardY;
+        var Array pieceShape;
+        let pieceShape = currentPiece.getShape();
+        
+        let i = 0;
+        while (i < 4) {
+            let j = 0;
+            while (j < 4) {
+                if (pieceShape[(i * 4) + j] = 1) {
+                    let boardX = newX + j;
+                    let boardY = newY + i;
+                    
+                    // 检查边界
+                    if (boardX < 0) { return true; }
+                    if (boardX > 9) { return true; }
+                    if (boardY > 19) { return true; }
+                    
+                    // 检查与已放置方块的碰撞
+                    if (boardY > -1) {
+                        if (board[(boardY * 10) + boardX] = 1) {
+                            return true;
+                        }
+                    }
+                }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        return false;
+    }
+    
+    method void placePiece() {
+        var int i, j, boardX, boardY;
+        var Array pieceShape;
+        let pieceShape = currentPiece.getShape();
+        
+        let i = 0;
+        while (i < 4) {
+            let j = 0;
+            while (j < 4) {
+                if (pieceShape[(i * 4) + j] = 1) {
+                    let boardX = currentPiece.getX() + j;
+                    let boardY = currentPiece.getY() + i;
+                    if ((boardY > -1) & (boardY < 20)) {
+                        let board[(boardY * 10) + boardX] = 1;
+                    }
+                }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+    
+    method void checkLines() {
+        var int i, j, count;
+        var int linesCleared;
+        let linesCleared = 0;
+        
+        let i = 19;
+        while (i > -1) {
+            let count = 0;
+            let j = 0;
+            while (j < 10) {
+                if (board[(i * 10) + j] = 1) {
+                    let count = count + 1;
+                }
+                let j = j + 1;
+            }
+            
+            if (count = 10) {
+                do removeLine(i);
+                let linesCleared = linesCleared + 1;
+            } else {
+                let i = i - 1;
+            }
+        }
+        
+        if (linesCleared = 1) { let score = score + 100; }
+        if (linesCleared = 2) { let score = score + 300; }
+        if (linesCleared = 3) { let score = score + 500; }
+        if (linesCleared = 4) { let score = score + 800; }
+        return;
+    }
+    
+    method void removeLine(int row) {
+        var int i, j;
+        let i = row;
+        while (i > 0) {
+            let j = 0;
+            while (j < 10) {
+                let board[(i * 10) + j] = board[((i-1) * 10) + j];
+                let j = j + 1;
+            }
+            let i = i - 1;
+        }
+        
+        // 清空最上面一行
+        let j = 0;
+        while (j < 10) {
+            let board[j] = 0;
+            let j = j + 1;
+        }
+        return;
+    }
+    
+    method void drawGame() {
+        var int i, j;
+        
+        // 绘制已放置的方块
+        let i = 0;
+        while (i < 20) {
+            let j = 0;
+            while (j < 10) {
+                if (board[(i * 10) + j] = 1) {
+                    do Screen.setColor(true);
+                    do Screen.drawRectangle(
+                        160 + (j * 16), i * 16,
+                        160 + ((j + 1) * 16) - 1, (i + 1) * 16 - 1
+                    );
+                }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        
+        // 绘制当前方块
+        do currentPiece.draw();
+        return;
+    }
+    
+    method void dispose() {
+        do Memory.deAlloc(board);
+        do currentPiece.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+}

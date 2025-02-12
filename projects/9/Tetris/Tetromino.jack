@@ -1,0 +1,98 @@
+// Represents a single tetromino (tetris piece)
+class Tetromino {
+    field Array shape;
+    field int x, y;
+    field int size;
+    field int type;
+    
+    constructor Tetromino new(int pieceType) {
+        let type = pieceType;
+        let size = 4;
+        let shape = Array.new(16);
+        let x = 3;  // 调整初始X位置
+        let y = -2; // 调整初始Y位置，使方块从顶部慢慢出现
+        
+        do initShape(pieceType);
+        return this;
+    } 
+    method void initShape(int pieceType) {
+        do clearShape();
+        
+        if (pieceType = 0) { // I piece
+            do setShape(0,1, 1,1, 2,1, 3,1);
+        }
+        if (pieceType = 1) { // O piece
+            do setShape(1,1, 2,1, 1,2, 2,2);
+        }
+        if (pieceType = 2) { // T piece
+            do setShape(1,1, 0,2, 1,2, 2,2);
+        }
+        if (pieceType = 3) { // L piece
+            do setShape(2,1, 0,2, 1,2, 2,2);
+        }
+        if (pieceType = 4) { // J piece
+            do setShape(0,1, 0,2, 1,2, 2,2);
+        }
+        if (pieceType = 5) { // S piece
+            do setShape(1,1, 2,1, 0,2, 1,2);
+        }
+        if (pieceType = 6) { // Z piece
+            do setShape(0,1, 1,1, 1,2, 2,2);
+        }
+        return;
+    }
+    
+    method void clearShape() {
+        var int i;
+        let i = 0;
+        while (i < 16) {
+            let shape[i] = 0;
+            let i = i + 1;
+        }
+        return;
+    }
+    
+    method void setShape(int x1,int y1, int x2,int y2, int x3,int y3, int x4,int y4) {
+        let shape[y1*4 + x1] = 1;
+        let shape[y2*4 + x2] = 1;
+        let shape[y3*4 + x3] = 1;
+        let shape[y4*4 + x4] = 1;
+        return;
+    }
+    
+    method void rotate() {
+        var Array newShape;
+        var int i, j;
+        
+        let newShape = Array.new(16);
+        
+        let i = 0;
+        while (i < 4) {
+            let j = 0;
+            while (j < 4) {
+                let newShape[j*4 + (3-i)] = shape[i*4 + j];
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        
+        do shape.dispose();
+        let shape = newShape;
+        return;
+    }
+    
+    method void dispose() {
+        do shape.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+    
+    // Getters and movement methods
+    method int getX() { return x; }
+    method int getY() { return y; }
+    method Array getShape() { return shape; }
+    method void moveLeft() { let x = x - 1; return; }
+    method void moveRight() { let x = x + 1; return; }
+    method void moveDown() { let y = y + 1; return; }
+    method void moveUp() { let y = y - 1; return; }
+}

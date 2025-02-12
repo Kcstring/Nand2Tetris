@@ -1,0 +1,111 @@
+class Piece {
+    field int x, y;
+    field Array shape;
+    field int rotation;  // 0-3 表示旋转状态
+    field int pieceType; // 0-6 表示不同形状
+    
+    constructor Piece new(int startX, int startY) {
+        // Random.randRange是假设存在的随机数生成函数
+        // 在实际实现中，你可能需要自己实现一个简单的随机数生成器
+        let pieceType = 0;  // 这里简化为固定使用第一种形状
+        let x = startX;
+        let y = startY;
+        let rotation = 0;
+        let shape = Array.new(16);
+        do initShape();
+        return this;
+    }
+    
+    method void initShape() {
+        var int i;
+        let i = 0;
+        while (i < 16) {
+            let shape[i] = 0;
+            let i = i + 1;
+        }
+        
+        // 初始化为"T"形状
+        let shape[1] = 1;
+        let shape[4] = 1;
+        let shape[5] = 1;
+        let shape[6] = 1;
+        return;
+    }
+    
+    method int getX() { return x; }
+    method int getY() { return y; }
+    method Array getShape() { return shape; }
+    
+    method void moveLeft() {
+        let x = x - 1;
+        return;
+    }
+    
+    method void moveRight() {
+        let x = x + 1;
+        return;
+    }
+    
+    method void moveDown() {
+        let y = y + 1;
+        return;
+    }
+    
+    method void rotate() {
+        var Array newShape;
+        var int i, j;
+        
+        let newShape = Array.new(16);
+        
+        // 执行90度旋转
+        let i = 0;
+        while (i < 4) {
+            let j = 0;
+            while (j < 4) {
+                let newShape[(j * 4) + (3 - i)] = shape[(i * 4) + j];
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        
+        // 复制新形状到当前形状
+        let i = 0;
+        while (i < 16) {
+            let shape[i] = newShape[i];
+            let i = i + 1;
+        }
+        
+        do Memory.deAlloc(newShape);
+        return;
+    }
+    
+    method void draw() {
+        var int i, j;
+        let i = 0;
+        while (i < 4) {
+            let j = 0;
+            while (j < 4) {
+                if (shape[(i * 4) + j] = 1) {
+                    if ((y + i) > -1) {
+                        do Screen.setColor(true);
+                        do Screen.drawRectangle(
+                            160 + ((x + j) * 16),
+                            ((y + i) * 16),
+                            160 + ((x + j + 1) * 16) - 1,
+                            ((y + i + 1) * 16) - 1
+                        );
+                    }
+                }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+    
+    method void dispose() {
+        do Memory.deAlloc(shape);
+        do Memory.deAlloc(this);
+        return;
+    }
+}

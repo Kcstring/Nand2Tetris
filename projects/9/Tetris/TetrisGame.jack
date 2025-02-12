@@ -1,0 +1,244 @@
+// Main game class
+class TetrisGame {
+    field Board board;
+    field Tetromino currentPiece;
+    field int score;
+    field boolean gameOver;
+    field int moveDelay;
+    field int currentDelay;
+    field int level;
+    
+    constructor TetrisGame new() {
+        let board = Board.new();
+        let score = 0;
+        let gameOver = false;
+        let moveDelay = 20;  // Initial delay between moves
+        let currentDelay = 0;
+        let level = 1;
+        
+        // Initialize random seed with current time
+        do Random.init(1234); // You should use actual time here
+        do spawnPiece();
+        return this;
+    }
+    
+    method void spawnPiece() {
+        var int randType;
+        let randType = Random.randRange(7);  
+        let currentPiece = Tetromino.new(randType);
+        
+        // 只有当新方块与已有方块发生碰撞时才算游戏结束
+        if ((currentPiece.getY() = 0) & (board.isCollision(currentPiece))) {
+            let gameOver = true;
+        }
+        return;
+    }
+    
+    method void run() {
+        var char key;
+        
+        while (~gameOver) {
+            // Handle input
+            let key = Keyboard.keyPressed();
+            
+            if (key = 130) { do moveLeft(); }      // Left arrow
+            if (key = 132) { do moveRight(); }     // Right arrow
+            if (key = 133) { do moveDown(); }      // Down arrow
+            if (key = 131) { do rotatePiece(); }   // Up arrow
+            if (key = 32) { do hardDrop(); }       // Space
+            
+            // Update game state
+            let currentDelay = currentDelay + 1;
+            if (currentDelay > moveDelay) {
+                let currentDelay = 0;
+                do update();
+            }
+            
+            // Draw game
+            do draw();
+            
+            // Small delay
+            do Sys.wait(50);
+        }
+        
+        do drawGameOver();
+        return;
+    }
+    
+    method void hardDrop() {
+        while (~board.isCollision(currentPiece)) {
+            do currentPiece.moveDown();
+        }
+        do currentPiece.moveUp();
+        do board.mergePiece(currentPiece);
+        do currentPiece.dispose();
+        do spawnPiece();
+        do checkLines();
+        return;
+    }
+    
+    method void update() {
+        // Move piece down
+        do currentPiece.moveDown();
+        
+        // Check for collision
+        if (board.isCollision(currentPiece)) {
+            do currentPiece.moveUp();  // Move back up
+            do board.mergePiece(currentPiece);
+            do currentPiece.dispose();
+            do spawnPiece();
+            do checkLines();
+        }
+        return;
+    }
+    
+    method void checkLines() {
+        var int linesCleared;
+        let linesCleared = board.checkLines();
+        
+        if (linesCleared > 0) {
+            let score = score + (100 * linesCleared * linesCleared);
+            // Increase level and speed every 10 lines
+            if ((score / 1000) > level) {
+                let level = level + 1;
+                let moveDelay = moveDelay - 50;
+                if (moveDelay < 100) { let moveDelay = 100; }
+            }
+        }
+        return;
+    }
+    
+    method void draw() {
+        var int i, j;
+        var Array shape;
+        
+        // Clear screen
+        do Screen.clearScreen();
+        
+        // Draw board frame
+        do Screen.drawRectangle(100, 0, 200, 300);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(102, 2, 198, 298);
+        do Screen.setColor(true);
+        
+        // Draw score and level
+        do Output.moveCursor(0, 0);
+        do Output.printString("Score: ");
+        do Output.printInt(score);
+        do Output.moveCursor(2, 0);
+        do Output.printString("Level: ");
+        do Output.printInt(level);
+        
+        // Draw placed blocks
+        let i = 0;
+        while (i < 20) {
+            let j = 0;
+            while (j < 10) {
+                if (board.getCell(j, i)) {
+                    do drawBlock(j, i);
+                }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        
+        // Draw current piece
+        if (~(currentPiece = null)) {
+            let shape = currentPiece.getShape();
+            let i = 0;
+            while (i < 4) {
+                let j = 0;
+                while (j < 4) {
+                    if (shape[i * 4 + j] = 1) {
+                        do drawBlock(
+                            currentPiece.getX() + j,
+                            currentPiece.getY() + i
+                        );
+                    }
+                    let j = j + 1;
+                }
+                let i = i + 1;
+            }
+        }
+        
+        return;
+    }
+    
+    method void drawBlock(int x, int y) {
+        var int blockSize, screenX, screenY;
+        let blockSize = 15; // Each block is 20x20 pixels
+        
+        // Convert board coordinates to screen coordinates
+        let screenX = 102 + (x * blockSize);
+        let screenY = 2 + (y * blockSize);
+        
+        // Draw filled block
+        do Screen.setColor(true);
+        do Screen.drawRectangle(screenX, screenY, 
+                              screenX + blockSize - 1, 
+                              screenY + blockSize - 1);
+        
+        // Draw highlight (3D effect)
+        do Screen.setColor(false);
+        do Screen.drawLine(screenX + 1, screenY + blockSize - 1,
+                          screenX + blockSize - 1, screenY + blockSize - 1);
+        do Screen.drawLine(screenX + blockSize - 1, screenY + 1,
+                          screenX + blockSize - 1, screenY + blockSize - 1);
+        
+        return;
+    }
+    
+    method void drawGameOver() {
+        do Screen.setColor(true);
+        do Output.moveCursor(10, 27);
+        do Output.printString("Game Over!");
+        do Output.moveCursor(12, 27);
+        do Output.printString("Final Score: ");
+        do Output.printInt(score);
+        return;
+    }
+    
+    method void dispose() {
+        do board.dispose();
+        if (~(currentPiece = null)) {
+            do currentPiece.dispose();
+        }
+        do Memory.deAlloc(this);
+        return;
+    }
+    
+    // Game control methods
+    method void moveLeft() {
+        do currentPiece.moveLeft();
+        if (board.isCollision(currentPiece)) {
+            do currentPiece.moveRight();
+        }
+        return;
+    }
+    
+    method void moveRight() {
+        do currentPiece.moveRight();
+        if (board.isCollision(currentPiece)) {
+            do currentPiece.moveLeft();
+        }
+        return;
+    }
+    
+    method void moveDown() {
+        do currentPiece.moveDown();
+        if (board.isCollision(currentPiece)) {
+            do currentPiece.moveUp();
+        }
+        return;
+    }
+    
+    method void rotatePiece() {
+        do currentPiece.rotate();
+        if (board.isCollision(currentPiece)) {
+            do currentPiece.rotate();
+            do currentPiece.rotate();
+            do currentPiece.rotate();
+        }
+        return;
+    }
+}

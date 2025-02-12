@@ -1,0 +1,22 @@
+// Random number generator class
+class Random {
+    static int seed;
+    
+    function void init(int initialSeed) {
+        let seed = initialSeed;
+        return;
+    }
+    
+    // Linear congruential generator
+    function int rand() {
+        let seed = seed * 1309 + 13849;
+        return seed & 32767; // Keep only lower 15 bits
+    }
+    
+    // Returns a random number between 0 and max-1
+    function int randRange(int max) {
+        var int rand;
+        let rand = Random.rand();
+        return rand / (32767 / max);
+    }
+}

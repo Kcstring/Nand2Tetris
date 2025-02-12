@@ -1,0 +1,707 @@
+function TetrisGame.new 0
+    push constant 7
+    call Memory.alloc 1
+    pop pointer 0
+    call Board.new 0
+    pop this 0
+    push constant 0
+    pop this 2
+    push constant 0
+    pop this 3
+    push constant 20
+    pop this 4
+    push constant 0
+    pop this 5
+    push constant 1
+    pop this 6
+    push constant 1234
+    call Random.init 1
+    pop temp 0
+    push pointer 0
+    call TetrisGame.spawnPiece 1
+    pop temp 0
+    push pointer 0
+    return
+function TetrisGame.spawnPiece 1
+    push argument 0
+    pop pointer 0
+    push constant 7
+    call Random.randRange 1
+    pop local 0
+    push local 0
+    call Tetromino.new 1
+    pop this 1
+    push this 1
+    call Tetromino.getY 1
+    push constant 0
+    eq
+    push this 0
+    push this 1
+    call Board.isCollision 2
+    and
+    not
+    if-goto TetrisGame_1
+    push constant 1
+    neg
+    pop this 3
+    goto TetrisGame_0
+label TetrisGame_1
+label TetrisGame_0
+    push constant 0
+    return
+function TetrisGame.run 1
+    push argument 0
+    pop pointer 0
+label TetrisGame_2
+    push this 3
+    not
+    not
+    if-goto TetrisGame_3
+    call Keyboard.keyPressed 0
+    pop local 0
+    push local 0
+    push constant 130
+    eq
+    not
+    if-goto TetrisGame_5
+    push pointer 0
+    call TetrisGame.moveLeft 1
+    pop temp 0
+    goto TetrisGame_4
+label TetrisGame_5
+label TetrisGame_4
+    push local 0
+    push constant 132
+    eq
+    not
+    if-goto TetrisGame_7
+    push pointer 0
+    call TetrisGame.moveRight 1
+    pop temp 0
+    goto TetrisGame_6
+label TetrisGame_7
+label TetrisGame_6
+    push local 0
+    push constant 133
+    eq
+    not
+    if-goto TetrisGame_9
+    push pointer 0
+    call TetrisGame.moveDown 1
+    pop temp 0
+    goto TetrisGame_8
+label TetrisGame_9
+label TetrisGame_8
+    push local 0
+    push constant 131
+    eq
+    not
+    if-goto TetrisGame_11
+    push pointer 0
+    call TetrisGame.rotatePiece 1
+    pop temp 0
+    goto TetrisGame_10
+label TetrisGame_11
+label TetrisGame_10
+    push local 0
+    push constant 32
+    eq
+    not
+    if-goto TetrisGame_13
+    push pointer 0
+    call TetrisGame.hardDrop 1
+    pop temp 0
+    goto TetrisGame_12
+label TetrisGame_13
+label TetrisGame_12
+    push this 5
+    push constant 1
+    add
+    pop this 5
+    push this 5
+    push this 4
+    gt
+    not
+    if-goto TetrisGame_15
+    push constant 0
+    pop this 5
+    push pointer 0
+    call TetrisGame.update 1
+    pop temp 0
+    goto TetrisGame_14
+label TetrisGame_15
+label TetrisGame_14
+    push pointer 0
+    call TetrisGame.draw 1
+    pop temp 0
+    push constant 50
+    call Sys.wait 1
+    pop temp 0
+    goto TetrisGame_2
+label TetrisGame_3
+    push pointer 0
+    call TetrisGame.drawGameOver 1
+    pop temp 0
+    push constant 0
+    return
+function TetrisGame.hardDrop 0
+    push argument 0
+    pop pointer 0
+label TetrisGame_16
+    push this 0
+    push this 1
+    call Board.isCollision 2
+    not
+    not
+    if-goto TetrisGame_17
+    push this 1
+    call Tetromino.moveDown 1
+    pop temp 0
+    goto TetrisGame_16
+label TetrisGame_17
+    push this 1
+    call Tetromino.moveUp 1
+    pop temp 0
+    push this 0
+    push this 1
+    call Board.mergePiece 2
+    pop temp 0
+    push this 1
+    call Tetromino.dispose 1
+    pop temp 0
+    push pointer 0
+    call TetrisGame.spawnPiece 1
+    pop temp 0
+    push pointer 0
+    call TetrisGame.checkLines 1
+    pop temp 0
+    push constant 0
+    return
+function TetrisGame.update 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    call Tetromino.moveDown 1
+    pop temp 0
+    push this 0
+    push this 1
+    call Board.isCollision 2
+    not
+    if-goto TetrisGame_19
+    push this 1
+    call Tetromino.moveUp 1
+    pop temp 0
+    push this 0
+    push this 1
+    call Board.mergePiece 2
+    pop temp 0
+    push this 1
+    call Tetromino.dispose 1
+    pop temp 0
+    push pointer 0
+    call TetrisGame.spawnPiece 1
+    pop temp 0
+    push pointer 0
+    call TetrisGame.checkLines 1
+    pop temp 0
+    goto TetrisGame_18
+label TetrisGame_19
+label TetrisGame_18
+    push constant 0
+    return
+function TetrisGame.checkLines 1
+    push argument 0
+    pop pointer 0
+    push this 0
+    call Board.checkLines 1
+    pop local 0
+    push local 0
+    push constant 0
+    gt
+    not
+    if-goto TetrisGame_21
+    push this 2
+    push constant 100
+    push local 0
+    call Math.multiply 2
+    push local 0
+    call Math.multiply 2
+    add
+    pop this 2
+    push this 2
+    push constant 1000
+    call Math.divide 2
+    push this 6
+    gt
+    not
+    if-goto TetrisGame_23
+    push this 6
+    push constant 1
+    add
+    pop this 6
+    push this 4
+    push constant 50
+    sub
+    pop this 4
+    push this 4
+    push constant 100
+    lt
+    not
+    if-goto TetrisGame_25
+    push constant 100
+    pop this 4
+    goto TetrisGame_24
+label TetrisGame_25
+label TetrisGame_24
+    goto TetrisGame_22
+label TetrisGame_23
+label TetrisGame_22
+    goto TetrisGame_20
+label TetrisGame_21
+label TetrisGame_20
+    push constant 0
+    return
+function TetrisGame.draw 3
+    push argument 0
+    pop pointer 0
+    call Screen.clearScreen 0
+    pop temp 0
+    push constant 100
+    push constant 0
+    push constant 200
+    push constant 300
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 0
+    call Screen.setColor 1
+    pop temp 0
+    push constant 102
+    push constant 2
+    push constant 198
+    push constant 298
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 1
+    neg
+    call Screen.setColor 1
+    pop temp 0
+    push constant 0
+    push constant 0
+    call Output.moveCursor 2
+    pop temp 0
+    push constant 7
+    call String.new 1
+    push constant 83
+    call String.appendChar 2
+    push constant 99
+    call String.appendChar 2
+    push constant 111
+    call String.appendChar 2
+    push constant 114
+    call String.appendChar 2
+    push constant 101
+    call String.appendChar 2
+    push constant 58
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    push this 2
+    call Output.printInt 1
+    pop temp 0
+    push constant 2
+    push constant 0
+    call Output.moveCursor 2
+    pop temp 0
+    push constant 7
+    call String.new 1
+    push constant 76
+    call String.appendChar 2
+    push constant 101
+    call String.appendChar 2
+    push constant 118
+    call String.appendChar 2
+    push constant 101
+    call String.appendChar 2
+    push constant 108
+    call String.appendChar 2
+    push constant 58
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    push this 6
+    call Output.printInt 1
+    pop temp 0
+    push constant 0
+    pop local 0
+label TetrisGame_26
+    push local 0
+    push constant 20
+    lt
+    not
+    if-goto TetrisGame_27
+    push constant 0
+    pop local 1
+label TetrisGame_28
+    push local 1
+    push constant 10
+    lt
+    not
+    if-goto TetrisGame_29
+    push this 0
+    push local 1
+    push local 0
+    call Board.getCell 3
+    not
+    if-goto TetrisGame_31
+    push pointer 0
+    push local 1
+    push local 0
+    call TetrisGame.drawBlock 3
+    pop temp 0
+    goto TetrisGame_30
+label TetrisGame_31
+label TetrisGame_30
+    push local 1
+    push constant 1
+    add
+    pop local 1
+    goto TetrisGame_28
+label TetrisGame_29
+    push local 0
+    push constant 1
+    add
+    pop local 0
+    goto TetrisGame_26
+label TetrisGame_27
+    push this 1
+    push constant 0
+    eq
+    not
+    not
+    if-goto TetrisGame_33
+    push this 1
+    call Tetromino.getShape 1
+    pop local 2
+    push constant 0
+    pop local 0
+label TetrisGame_34
+    push local 0
+    push constant 4
+    lt
+    not
+    if-goto TetrisGame_35
+    push constant 0
+    pop local 1
+label TetrisGame_36
+    push local 1
+    push constant 4
+    lt
+    not
+    if-goto TetrisGame_37
+    push local 0
+    push constant 4
+    call Math.multiply 2
+    push local 1
+    add
+    push local 2
+    add
+    pop pointer 1
+    push that 0
+    push constant 1
+    eq
+    not
+    if-goto TetrisGame_39
+    push pointer 0
+    push this 1
+    call Tetromino.getX 1
+    push local 1
+    add
+    push this 1
+    call Tetromino.getY 1
+    push local 0
+    add
+    call TetrisGame.drawBlock 3
+    pop temp 0
+    goto TetrisGame_38
+label TetrisGame_39
+label TetrisGame_38
+    push local 1
+    push constant 1
+    add
+    pop local 1
+    goto TetrisGame_36
+label TetrisGame_37
+    push local 0
+    push constant 1
+    add
+    pop local 0
+    goto TetrisGame_34
+label TetrisGame_35
+    goto TetrisGame_32
+label TetrisGame_33
+label TetrisGame_32
+    push constant 0
+    return
+function TetrisGame.drawBlock 3
+    push argument 0
+    pop pointer 0
+    push constant 15
+    pop local 0
+    push constant 102
+    push argument 1
+    push local 0
+    call Math.multiply 2
+    add
+    pop local 1
+    push constant 2
+    push argument 2
+    push local 0
+    call Math.multiply 2
+    add
+    pop local 2
+    push constant 1
+    neg
+    call Screen.setColor 1
+    pop temp 0
+    push local 1
+    push local 2
+    push local 1
+    push local 0
+    add
+    push constant 1
+    sub
+    push local 2
+    push local 0
+    add
+    push constant 1
+    sub
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 0
+    call Screen.setColor 1
+    pop temp 0
+    push local 1
+    push constant 1
+    add
+    push local 2
+    push local 0
+    add
+    push constant 1
+    sub
+    push local 1
+    push local 0
+    add
+    push constant 1
+    sub
+    push local 2
+    push local 0
+    add
+    push constant 1
+    sub
+    call Screen.drawLine 4
+    pop temp 0
+    push local 1
+    push local 0
+    add
+    push constant 1
+    sub
+    push local 2
+    push constant 1
+    add
+    push local 1
+    push local 0
+    add
+    push constant 1
+    sub
+    push local 2
+    push local 0
+    add
+    push constant 1
+    sub
+    call Screen.drawLine 4
+    pop temp 0
+    push constant 0
+    return
+function TetrisGame.drawGameOver 0
+    push argument 0
+    pop pointer 0
+    push constant 1
+    neg
+    call Screen.setColor 1
+    pop temp 0
+    push constant 10
+    push constant 27
+    call Output.moveCursor 2
+    pop temp 0
+    push constant 10
+    call String.new 1
+    push constant 71
+    call String.appendChar 2
+    push constant 97
+    call String.appendChar 2
+    push constant 109
+    call String.appendChar 2
+    push constant 101
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 79
+    call String.appendChar 2
+    push constant 118
+    call String.appendChar 2
+    push constant 101
+    call String.appendChar 2
+    push constant 114
+    call String.appendChar 2
+    push constant 33
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    push constant 12
+    push constant 27
+    call Output.moveCursor 2
+    pop temp 0
+    push constant 13
+    call String.new 1
+    push constant 70
+    call String.appendChar 2
+    push constant 105
+    call String.appendChar 2
+    push constant 110
+    call String.appendChar 2
+    push constant 97
+    call String.appendChar 2
+    push constant 108
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    push constant 83
+    call String.appendChar 2
+    push constant 99
+    call String.appendChar 2
+    push constant 111
+    call String.appendChar 2
+    push constant 114
+    call String.appendChar 2
+    push constant 101
+    call String.appendChar 2
+    push constant 58
+    call String.appendChar 2
+    push constant 32
+    call String.appendChar 2
+    call Output.printString 1
+    pop temp 0
+    push this 2
+    call Output.printInt 1
+    pop temp 0
+    push constant 0
+    return
+function TetrisGame.dispose 0
+    push argument 0
+    pop pointer 0
+    push this 0
+    call Board.dispose 1
+    pop temp 0
+    push this 1
+    push constant 0
+    eq
+    not
+    not
+    if-goto TetrisGame_41
+    push this 1
+    call Tetromino.dispose 1
+    pop temp 0
+    goto TetrisGame_40
+label TetrisGame_41
+label TetrisGame_40
+    push pointer 0
+    call Memory.deAlloc 1
+    pop temp 0
+    push constant 0
+    return
+function TetrisGame.moveLeft 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    call Tetromino.moveLeft 1
+    pop temp 0
+    push this 0
+    push this 1
+    call Board.isCollision 2
+    not
+    if-goto TetrisGame_43
+    push this 1
+    call Tetromino.moveRight 1
+    pop temp 0
+    goto TetrisGame_42
+label TetrisGame_43
+label TetrisGame_42
+    push constant 0
+    return
+function TetrisGame.moveRight 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    call Tetromino.moveRight 1
+    pop temp 0
+    push this 0
+    push this 1
+    call Board.isCollision 2
+    not
+    if-goto TetrisGame_45
+    push this 1
+    call Tetromino.moveLeft 1
+    pop temp 0
+    goto TetrisGame_44
+label TetrisGame_45
+label TetrisGame_44
+    push constant 0
+    return
+function TetrisGame.moveDown 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    call Tetromino.moveDown 1
+    pop temp 0
+    push this 0
+    push this 1
+    call Board.isCollision 2
+    not
+    if-goto TetrisGame_47
+    push this 1
+    call Tetromino.moveUp 1
+    pop temp 0
+    goto TetrisGame_46
+label TetrisGame_47
+label TetrisGame_46
+    push constant 0
+    return
+function TetrisGame.rotatePiece 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    call Tetromino.rotate 1
+    pop temp 0
+    push this 0
+    push this 1
+    call Board.isCollision 2
+    not
+    if-goto TetrisGame_49
+    push this 1
+    call Tetromino.rotate 1
+    pop temp 0
+    push this 1
+    call Tetromino.rotate 1
+    pop temp 0
+    push this 1
+    call Tetromino.rotate 1
+    pop temp 0
+    goto TetrisGame_48
+label TetrisGame_49
+label TetrisGame_48
+    push constant 0
+    return

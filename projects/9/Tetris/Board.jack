@@ -1,0 +1,145 @@
+// Represents the game board
+class Board {
+    field Array grid;
+    field int width, height;
+    
+    constructor Board new() {
+        let width = 10;
+        let height = 20;
+        let grid = Array.new(width * height);
+        do clear();
+        return this;
+    }
+    
+    method void clear() {
+        var int i;
+        let i = 0;
+        while (i < (width * height)) {
+            let grid[i] = 0;
+            let i = i + 1;
+        }
+        return;
+    }
+    
+    method boolean getCell(int x, int y) {
+        return grid[y * width + x] = 1;
+    }
+    
+    method boolean isCollision(Tetromino piece) {
+        var int i, j, px, py;
+        var Array shape;
+        
+        let shape = piece.getShape();
+        let i = 0;
+        while (i < 4) {
+            let j = 0;
+            while (j < 4) {
+                if (shape[i*4 + j] = 1) {
+                    let px = piece.getX() + j;
+                    let py = piece.getY() + i;
+                    
+                    // 检查边界
+                    if ((px < 0) | (px > width-1) | (py > height-1)) {
+                        return true;
+                    }
+                    
+                    // 只检查在游戏板内的碰撞
+                    if ((py > -1) & (px > -1) & (px < width)) {
+                        if (grid[py*width + px] = 1) {
+                            return true;
+                        }
+                    }
+                }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        return false;
+    }
+    
+    method void mergePiece(Tetromino piece) {
+        var int i, j, px, py;
+        var Array shape;
+        
+        let shape = piece.getShape();
+        let i = 0;
+        while (i < 4) {
+            let j = 0;
+            while (j < 4) {
+                if (shape[i*4 + j] = 1) {
+                    let px = piece.getX() + j;
+                    let py = piece.getY() + i;
+                    if ((px > -1) & (py > -1)) {
+                        let grid[py*width + px] = 1;
+                    }
+                }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+    
+    method int checkLines() {
+        var int row, col, fullCount;
+        var boolean isFull;
+        
+        let fullCount = 0;
+        let row = height - 1;
+        
+        while (row > -1) {
+            // Check if current row is full
+            let isFull = true;
+            let col = 0;
+            while (col < width) {
+                if (grid[row*width + col] = 0) {
+                    let isFull = false;
+                }
+                let col = col + 1;
+            }
+            
+            // If row is full, remove it
+            if (isFull) {
+                do removeLine(row);
+                let fullCount = fullCount + 1;
+                // Don't decrement row since we need to check the same row again
+                // after lines have fallen
+            }
+            else {
+                let row = row - 1;
+            }
+        }
+        
+        return fullCount;
+    }
+    
+    method void removeLine(int row) {
+        var int i, j;
+        
+        // Move all rows above down one line
+        let i = row;
+        while (i > 0) {
+            let j = 0;
+            while (j < width) {
+                let grid[i*width + j] = grid[(i-1)*width + j];
+                let j = j + 1;
+            }
+            let i = i - 1;
+        }
+        
+        // Clear top row
+        let j = 0;
+        while (j < width) {
+            let grid[j] = 0;
+            let j = j + 1;
+        }
+        
+        return;
+    }
+    
+    method void dispose() {
+        do grid.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+} 
