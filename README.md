@@ -4,7 +4,7 @@
 
 ## 项目概览
 
-Jack 代码 → Tokenizer → Parser → Symbol Table → VM → Hack → CPU (项目全流程）
+**Jack 源代码** → **Tokenizer → Parser → Symbol Table** → **VM Translator** → **Hack 汇编器** → **CPU / 模拟器**
 
 Nand2Tetris 是一门经典计算机系统构建课程，目标是从最基础的 NAND 门构建硬件电路，再逐步实现汇编器、虚拟机、编译器及简单操作系统，最终完成一台可运行程序的简化计算机。
 
