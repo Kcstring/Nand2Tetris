@@ -2,9 +2,11 @@
 
 > 本仓库记录了我基于 Nand2Tetris（从 NAND 到计算机系统）课程的学习与项目实现，从最基本的逻辑门到操作系统/编译器，逐步构建完整的简化计算机系统。官方课程网站：[nand2tetris.org](https://www.nand2tetris.org/)
 
-## 项目概览
 
-**Jack 源代码** → **Tokenizer → Parser → Symbol Table** → **VM Translator** → **Hack 汇编器** → **CPU / 模拟器**
+#### 🟦 **Jack 源代码** → 🟩 **Tokenizer → Parser → Symbol Table** → 🟨 **VM Translator** → 🟪 **Hack 汇编器** → 🟥 **CPU / 模拟器**
+
+
+## 项目概览
 
 Nand2Tetris 是一门经典计算机系统构建课程，目标是从最基础的 NAND 门构建硬件电路，再逐步实现汇编器、虚拟机、编译器及简单操作系统，最终完成一台可运行程序的简化计算机。
 
