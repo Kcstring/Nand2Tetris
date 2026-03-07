@@ -30,6 +30,8 @@ class Memory {
         return;
     }
 
+    /* 
+
     /** Finds an available RAM block of the given size and returns
      *  a reference to its base address. */
     function int alloc(int size) {
@@ -42,4 +44,66 @@ class Memory {
     function void deAlloc(Array o) {
         return;
     }     
+
+    */
+
+
+    /** Allocates a block of the given size and returns its base address */
+    function int alloc(int size) {
+
+        var int current;
+        var int prev;
+        var int blockSize;
+        var int newBlock;
+
+        let current = free;
+        let prev = 0;
+
+        while (current > 0) {
+
+            let blockSize = memory[current];
+
+            // 找到足够大的 block
+            if (blockSize >= size + 2) {
+
+                // 切割 block
+                let newBlock = current + size + 2;
+
+                let memory[newBlock] = blockSize - size - 2;
+                let memory[newBlock + 1] = memory[current + 1];
+
+                if (prev = 0) {
+                    let free = newBlock;
+                }
+                else {
+                    let memory[prev + 1] = newBlock;
+                }
+
+                let memory[current] = size;
+
+                return current + 2;
+            }
+
+            let prev = current;
+            let current = memory[current + 1];
+        }
+
+        return 0;
+    }
+
+    /** De-allocates a block */
+    function void deAlloc(Array o) {
+
+        var int addr;
+
+        // 找到 header
+        let addr = o - 2;
+
+        // 插入 free list
+        let memory[addr + 1] = free;
+        let free = addr;
+
+        return;
+    }
+
 }
